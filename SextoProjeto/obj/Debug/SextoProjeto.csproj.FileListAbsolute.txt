@@ -1,0 +1,8 @@
+C:\Users\Isahs\source\repos\SextoProjeto\SextoProjeto\bin\Debug\SextoProjeto.exe.config
+C:\Users\Isahs\source\repos\SextoProjeto\SextoProjeto\bin\Debug\SextoProjeto.exe
+C:\Users\Isahs\source\repos\SextoProjeto\SextoProjeto\bin\Debug\SextoProjeto.pdb
+C:\Users\Isahs\source\repos\SextoProjeto\SextoProjeto\obj\Debug\SextoProjeto.csproj.AssemblyReference.cache
+C:\Users\Isahs\source\repos\SextoProjeto\SextoProjeto\obj\Debug\SextoProjeto.csproj.SuggestedBindingRedirects.cache
+C:\Users\Isahs\source\repos\SextoProjeto\SextoProjeto\obj\Debug\SextoProjeto.csproj.CoreCompileInputs.cache
+C:\Users\Isahs\source\repos\SextoProjeto\SextoProjeto\obj\Debug\SextoProjeto.exe
+C:\Users\Isahs\source\repos\SextoProjeto\SextoProjeto\obj\Debug\SextoProjeto.pdb

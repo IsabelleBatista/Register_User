@@ -1,0 +1,6 @@
+##### INICIO #####
+NOME: Maria
+DATA_DE_NASCIMENTO: 08/12/1998
+NOME_DA_RUA: Rua santos
+NUMERO_DA_CASA: 78
+##### FIM #####
