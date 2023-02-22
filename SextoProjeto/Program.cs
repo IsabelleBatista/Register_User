@@ -15,14 +15,18 @@ namespace Quinto_projeto
         static string delimitadorFim;
         static string tagNome;
         static string tagDataNascimento;
+        static string tagDocumento;
         static string tagNomeRua;
         static string tagNumeroCasa;
+        static string caminhoArquivo;
+
         public struct DadosCadastraisStruct
         {
             public string Nome;
             public DateTime DataDeNascimento;
             public string NomeDaRua;
             public UInt32 NumeroDaCasa;
+            public string NumeroDocumento;
         }
         public enum Resultado_e
         {
@@ -37,6 +41,7 @@ namespace Quinto_projeto
             Console.ReadKey();
             Console.Clear();
         }
+
         public static Resultado_e PegaString(ref string minhaString, string mensagem)
         {
             Resultado_e retorno;
@@ -122,15 +127,19 @@ namespace Quinto_projeto
             cadastroUsuario.DataDeNascimento = new DateTime();
             cadastroUsuario.NomeDaRua = "";
             cadastroUsuario.NumeroDaCasa = 0;
+            cadastroUsuario.NumeroDocumento = "";
             if (PegaString(ref cadastroUsuario.Nome, "Digite o nome completo ou digite S para sair") == Resultado_e.Sair)
                 return Resultado_e.Sair;
             if (PegaData(ref cadastroUsuario.DataDeNascimento, "Digite a data de nascimento no formato DD/MM/AAAA ou digite S para sair") == Resultado_e.Sair)
+                return Resultado_e.Sair;
+            if (PegaString(ref cadastroUsuario.NumeroDocumento, "Digite o número do documento ou digite S para sair") == Resultado_e.Sair)
                 return Resultado_e.Sair;
             if (PegaString(ref cadastroUsuario.NomeDaRua, "Digite o nome da rua ou digite S para sair") == Resultado_e.Sair)
                 return Resultado_e.Sair;
             if (PegaUInt32(ref cadastroUsuario.NumeroDaCasa, "Digite o número da casa ou digite S para sair") == Resultado_e.Sair)
                 return Resultado_e.Sair;
             ListaDeUsuarios.Add(cadastroUsuario);
+            GravaDados(caminhoArquivo, ListaDeUsuarios);
             return Resultado_e.Sucesso;
         }
 
@@ -144,6 +153,7 @@ namespace Quinto_projeto
                     conteudoArquivo += delimitadorInicio + "\r\n";
                     conteudoArquivo += tagNome + cadastro.Nome + "\r\n";
                     conteudoArquivo += tagDataNascimento + cadastro.DataDeNascimento.ToString("dd/MM/yyyy") + "\r\n";
+                    conteudoArquivo += tagDocumento + cadastro.NumeroDocumento + "\r\n";
                     conteudoArquivo += tagNomeRua + cadastro.NomeDaRua + "\r\n";
                     conteudoArquivo += tagNumeroCasa + cadastro.NumeroDaCasa + "\r\n";
                     conteudoArquivo += delimitadorFim + "\r\n";
@@ -166,6 +176,7 @@ namespace Quinto_projeto
                     DadosCadastraisStruct dadosCadastrais;
                     dadosCadastrais.Nome = "";
                     dadosCadastrais.DataDeNascimento = new DateTime();
+                    dadosCadastrais.NumeroDocumento = "";
                     dadosCadastrais.NomeDaRua = "";
                     dadosCadastrais.NumeroDaCasa = 0;
 
@@ -179,6 +190,8 @@ namespace Quinto_projeto
                             dadosCadastrais.Nome = linha.Replace(tagNome, "");
                         if (linha.Contains(tagDataNascimento))
                             dadosCadastrais.DataDeNascimento = Convert.ToDateTime(linha.Replace(tagDataNascimento, ""));
+                        if (linha.Contains(tagDocumento))
+                            dadosCadastrais.NumeroDocumento = linha.Replace(tagDocumento, "");
                         if (linha.Contains(tagNomeRua))
                             dadosCadastrais.NomeDaRua = linha.Replace(tagNomeRua, "");
                         if (linha.Contains(tagNumeroCasa))
@@ -192,6 +205,65 @@ namespace Quinto_projeto
             }
         }
 
+        public static void BuscaUsuario(List<DadosCadastraisStruct> ListaDeUsuarios)
+        {
+            Console.WriteLine("Digite o número do documento para buscar o usuário ou digite S para sair: ");
+            string temp = Console.ReadLine();
+            if (temp.ToLower() == "s")
+                return;
+            else
+            {
+                List<DadosCadastraisStruct> ListaDeUsuariosTemp = ListaDeUsuarios.Where(x => x.NumeroDocumento == temp).ToList();
+                if (ListaDeUsuariosTemp.Count > 0)
+                {
+                    foreach (DadosCadastraisStruct usuario in ListaDeUsuariosTemp)
+                    {
+                        Console.WriteLine(tagNome + usuario.Nome);
+                        Console.WriteLine(tagDataNascimento + usuario.DataDeNascimento.ToString("dd/MM/yyyy"));
+                        Console.WriteLine(tagDocumento + usuario.NumeroDocumento);
+                        Console.WriteLine(tagNomeRua + usuario.NomeDaRua);
+                        Console.WriteLine(tagNumeroCasa + usuario.NumeroDaCasa);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Nenhum usuário possui o documento: " + temp);
+                }
+                MostraMensagem("");
+            }
+        }
+
+        public static void ExcluiUsuario(ref List<DadosCadastraisStruct> ListaDeUsuarios)
+        {
+            Console.WriteLine("Digite o número do documento para ecxluir o usuário ou digite S para sair: ");
+            string temp = Console.ReadLine();
+            bool alguelFoiExcluido = false;
+
+            if (temp.ToLower() == "s")
+                return;
+            else
+            {
+                List<DadosCadastraisStruct> ListaDeUsuariosTemp = ListaDeUsuarios.Where(x => x.NumeroDocumento == temp).ToList();
+                if (ListaDeUsuariosTemp.Count > 0)
+                {
+                    foreach (DadosCadastraisStruct usuario in ListaDeUsuariosTemp)
+                    {
+                        ListaDeUsuarios.Remove(usuario);
+                        alguelFoiExcluido = true;
+                    }
+                    if (alguelFoiExcluido)
+                        GravaDados(caminhoArquivo, ListaDeUsuarios);
+                    Console.WriteLine(ListaDeUsuariosTemp.Count + " usuário(s) " + temp + " removido(s) com sucesso");
+
+                }
+                else
+                {
+                    Console.WriteLine("Nenhum usuário possui o documento: " + temp);
+                }
+                MostraMensagem("");
+            }
+        }
+
         static void Main(string[] args)
         {
             List<DadosCadastraisStruct> ListaDeUsuarios = new List<DadosCadastraisStruct>();
@@ -200,20 +272,36 @@ namespace Quinto_projeto
             delimitadorFim = "##### FIM #####";
             tagNome = "NOME: ";
             tagDataNascimento = "DATA_DE_NASCIMENTO: ";
+            tagDocumento = "NUMERO_DO_DOCUMENTO: ";
             tagNomeRua = "NOME_DA_RUA: ";
             tagNumeroCasa = "NUMERO_DA_CASA: ";
-            string caminhoArquivo = @"baseDeDados.txt";
+            caminhoArquivo = @"baseDeDados.txt";
 
             CarregaDados(caminhoArquivo, ref ListaDeUsuarios);
             do
             {
-                Console.WriteLine("Digite C para cadastrar um novo usuário ou S para sair:");
+                Console.WriteLine("Pressione C para cadastrar um novo usuário");
+                Console.WriteLine("Pressione B para buscar usuário");
+                Console.WriteLine("Pressione E para excluir um usuário");
+                Console.WriteLine("Pressione S para sair");
+
                 opcao = Console.ReadKey(true).KeyChar.ToString().ToLower();
                 if (opcao == "c")
                 {
                     //Cadastrar um novo usuário
                     if (CadastraUsuario(ref ListaDeUsuarios) == Resultado_e.Sucesso)
                         GravaDados(caminhoArquivo, ListaDeUsuarios);
+                }
+                else if (opcao == "b")
+                {
+                    //busca um usuário
+                    BuscaUsuario(ListaDeUsuarios);
+
+                }
+                else if (opcao == "e")
+                {
+                    //exclui um usuario
+                    ExcluiUsuario(ref ListaDeUsuarios);
                 }
                 else if (opcao == "s")
                 {
